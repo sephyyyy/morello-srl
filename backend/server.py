@@ -6,7 +6,7 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 import uuid
 from datetime import datetime
 
@@ -34,6 +34,22 @@ class StatusCheck(BaseModel):
 
 class StatusCheckCreate(BaseModel):
     client_name: str
+
+# Contact Form Models
+class ContactSubmission(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    phone: Optional[str] = None
+    message: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    status: str = Field(default="pending")
+
+class ContactSubmissionCreate(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+    message: str
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
