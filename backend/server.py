@@ -68,6 +68,46 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# Contact Form Endpoints
+@api_router.post("/contact", response_model=dict)
+async def submit_contact_form(contact_data: ContactSubmissionCreate):
+    """Handle contact form submissions from the website"""
+    try:
+        # Create contact submission object
+        submission = ContactSubmission(**contact_data.dict())
+        
+        # Insert into MongoDB
+        result = await db.contact_submissions.insert_one(submission.dict())
+        
+        if result.inserted_id:
+            return {
+                "success": True,
+                "message": "Grazie per il tuo messaggio! Ti contatteremo presto.",
+                "submissionId": submission.id
+            }
+        else:
+            return {
+                "success": False,
+                "message": "Errore nell'invio del messaggio. Riprova più tardi."
+            }
+            
+    except Exception as e:
+        logger.error(f"Error submitting contact form: {str(e)}")
+        return {
+            "success": False,
+            "message": "Errore interno del server. Riprova più tardi."
+        }
+
+@api_router.get("/contact", response_model=List[ContactSubmission])
+async def get_contact_submissions():
+    """Get all contact form submissions (admin endpoint)"""
+    try:
+        submissions = await db.contact_submissions.find().sort("timestamp", -1).to_list(1000)
+        return [ContactSubmission(**submission) for submission in submissions]
+    except Exception as e:
+        logger.error(f"Error fetching contact submissions: {str(e)}")
+        return []
+
 # Include the router in the main app
 app.include_router(api_router)
 
