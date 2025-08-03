@@ -141,7 +141,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Contact Form API"
     - "Contact Form Integration"
   stuck_tasks: []
   test_all: false
