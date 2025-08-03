@@ -125,6 +125,17 @@ const Contact = () => {
             <h3 className="heading-2 mb-6">Richiedi un Preventivo</h3>
             
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Status Message */}
+              {submitMessage && (
+                <div className={`p-4 border ${
+                  submitStatus === 'success' 
+                    ? 'border-green-500 bg-green-500/10 text-green-400' 
+                    : 'border-red-500 bg-red-500/10 text-red-400'
+                }`}>
+                  {submitMessage}
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block body-small mb-2">Nome *</label>
@@ -134,7 +145,8 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 bg-black border border-gray-700 text-white focus:border-brand-primary focus:outline-none"
+                    disabled={isSubmitting}
+                    className="w-full p-3 bg-black border border-gray-700 text-white focus:border-brand-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div>
@@ -144,7 +156,8 @@ const Contact = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full p-3 bg-black border border-gray-700 text-white focus:border-brand-primary focus:outline-none"
+                    disabled={isSubmitting}
+                    className="w-full p-3 bg-black border border-gray-700 text-white focus:border-brand-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -157,7 +170,8 @@ const Contact = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full p-3 bg-black border border-gray-700 text-white focus:border-brand-primary focus:outline-none"
+                  disabled={isSubmitting}
+                  className="w-full p-3 bg-black border border-gray-700 text-white focus:border-brand-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
               
@@ -168,15 +182,29 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleInputChange}
                   required
+                  disabled={isSubmitting}
                   rows={5}
-                  className="w-full p-3 bg-black border border-gray-700 text-white focus:border-brand-primary focus:outline-none resize-vertical"
+                  className="w-full p-3 bg-black border border-gray-700 text-white focus:border-brand-primary focus:outline-none resize-vertical disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Descrivi il tuo progetto o le tue esigenze..."
                 ></textarea>
               </div>
               
-              <button type="submit" className="btn-primary w-full group">
-                <Send className="w-5 h-5" />
-                Invia Richiesta
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="btn-primary w-full group disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Invio in corso...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    Invia Richiesta
+                  </>
+                )}
               </button>
             </form>
           </div>
